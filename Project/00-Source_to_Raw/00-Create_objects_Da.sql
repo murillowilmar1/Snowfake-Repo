@@ -1,0 +1,82 @@
+--CREATE DATABASE DATAENGINNER; 
+
+CREATE OR REPLACE PROCEDURE DATAENGINNER.PUBLIC.create_environment_db(env STRING)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    EXECUTE IMMEDIATE
+        'CREATE DATABASE IF NOT EXISTS SNOWFLAKE_' || env;
+
+    RETURN 'Database SNOWFLAKE_' || env || ' created';
+END;
+$$;
+
+
+
+
+----- CREATE RAW SCHEMAS 
+
+CREATE OR REPLACE PROCEDURE DATAENGINNER.PUBLIC.create_raw_schema(env STRING)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    EXECUTE IMMEDIATE
+        'CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_' || env || '.RAW';
+
+    RETURN 'RAW schema created in SNOWFLAKE_' || env;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE DATAENGINNER.PUBLIC.create_stage_schema(env STRING)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    EXECUTE IMMEDIATE
+        'CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_' || env || '.STAGE';
+
+    RETURN 'RAW schema created in SNOWFLAKE_' || env;
+END;
+$$;
+
+
+
+CREATE OR REPLACE PROCEDURE DATAENGINNER.PUBLIC.create_analityc_schema(env STRING)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    EXECUTE IMMEDIATE
+        'CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_' || env || '.ANALITYCS';
+
+    RETURN 'RAW schema created in SNOWFLAKE_' || env;
+END;
+$$;
+
+-- Orquestacion 
+
+CREATE OR REPLACE PROCEDURE DATAENGINNER.PUBLIC.create_environment(env STRING)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    CALL DATAENGINNER.PUBLIC.create_environment_db(:env);
+    CALL DATAENGINNER.PUBLIC.create_raw_schema(:env);
+    CALL DATAENGINNER.PUBLIC.create_stage_schema(:env);
+    CALL DATAENGINNER.PUBLIC.create_analityc_schema(:env);
+
+    RETURN 'Environment ' || env || ' created successfully';
+END;
+$$;
+
+
+
+
+CALL DATAENGINNER.PUBLIC.create_environment('dev');
